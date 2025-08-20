@@ -5,7 +5,7 @@ from flask_mail import Mail
 from flask_cors import CORS
 from .modelsdb import db
 from .config import Config
-from .routesapi import users_bp, properties_bp, leads_bp, communications_bp
+from .routesapi import users_bp, properties_bp, leads_bp, communications_bp, auth_bp
 from dotenv import load_dotenv
 from .utils.responses import success_response, error_response
 
@@ -39,6 +39,7 @@ def create_app():
     app.register_blueprint(properties_bp)
     app.register_blueprint(leads_bp)
     app.register_blueprint(communications_bp)
+    app.register_blueprint(auth_bp)
 
     @app.route("/")
     def home():
