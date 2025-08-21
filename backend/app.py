@@ -1,76 +1,92 @@
 import os
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager
-from flask_mail import Mail
 from flask_cors import CORS
-from .modelsdb import db
-from .config import Config
-from .routesapi import users_bp, properties_bp, leads_bp, communications_bp, auth_bp
+from werkzeug.security import generate_password_hash
+from modelsdb import db, User
+from config import Config
 from dotenv import load_dotenv
-from .utils.responses import success_response, error_response
 
 load_dotenv()
-mail = Mail()
 
 def create_app():
     app = Flask(__name__)
-    app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "uploads")
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-    app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # limit 5MB per file
-
-    app.config["JWT_SECRET_KEY"] = "super-secret-key"
-    CORS(app)
+    
+    # Configure CORS
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    
+    # Configure database
     app.config.from_object(Config)
-
     db.init_app(app)
+    
+    # Configure JWT
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev-secret-key")
     jwt = JWTManager(app)
 
-    # Flask-Mail setup
-    app.config["MAIL_SERVER"] = "smtp.gmail.com"
-    app.config["MAIL_PORT"] = 587
-    app.config["MAIL_USE_TLS"] = True
-    app.config["MAIL_USERNAME"] = "youremail@gmail.com"        # use env vars in production
-    app.config["MAIL_PASSWORD"] = "yourpassword"              # use env vars in production
-
-    mail.init_app(app)
-
-    # Register blueprints
-    app.register_blueprint(users_bp)
-    app.register_blueprint(properties_bp)
-    app.register_blueprint(leads_bp)
-    app.register_blueprint(communications_bp)
-    app.register_blueprint(auth_bp, url_prefix="/api")
+    @app.route("/api/auth/register", methods=["POST"])
+    def register():
+        try:
+            data = request.get_json()
+            
+            # Validate required fields
+            if not all(key in data for key in ["name", "email", "password"]):
+                return jsonify({
+                    "success": False,
+                    "message": "Missing required fields"
+                }), 400
+                
+            # Check if user already exists
+            if User.query.filter_by(email=data["email"]).first():
+                return jsonify({
+                    "success": False,
+                    "message": "Email already registered"
+                }), 400
+                
+            # Hash the password
+            hashed_password = generate_password_hash(data["password"])
+            
+            # Create new user with hashed password
+            new_user = User(
+                name=data["name"],
+                email=data["email"],
+                password=hashed_password
+            )
+            
+            # Add user to database
+            db.session.add(new_user)
+            db.session.commit()
+            
+            print(f"Successfully created user: {new_user.email}")
+            
+            return jsonify({
+                "success": True,
+                "message": "Registration successful"
+            }), 201
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error during registration: {str(e)}")
+            # Print more detailed error information
+            import traceback
+            traceback.print_exc()
+            return jsonify({
+                "success": False,
+                "message": f"Registration error: {str(e)}"
+            }), 500
 
     @app.route("/")
     def home():
-        return success_response(message="Welcome to AURA Real Estate API")
-
-    # ---------------------------
-    # Error Handlers (wrapped)
-    # ---------------------------
-    @app.errorhandler(404)
-    def not_found(error):
-        return error_response("Not Found", str(error), 404)
-
-    @app.errorhandler(400)
-    def bad_request(error):
-        return error_response("Bad Request", str(error), 400)
-
-    @app.errorhandler(500)
-    def internal_error(error):
-        return error_response("Internal Server Error", "Something went wrong on the server.", 500)
-
-    @app.errorhandler(Exception)
-    def handle_exception(error):
-        return error_response("Unexpected Error", str(error), 500)
+        return jsonify({"message": "Welcome to AURA Real Estate API"})
 
     return app
 
-
 if __name__ == "__main__":
     app = create_app()
-
+    
+    # Drop and recreate database tables
     with app.app_context():
-        db.create_all()
-
-    app.run(debug=True)
+        db.drop_all()  # This will drop all existing tables
+        db.create_all()  # This will create tables with the new schema
+        print("Database tables recreated successfully!")
+    
+    app.run(debug=True, port=5000)

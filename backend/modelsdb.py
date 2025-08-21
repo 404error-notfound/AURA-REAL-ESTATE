@@ -5,14 +5,22 @@ db = SQLAlchemy()
 
 # User Model
 class User(db.Model):
+    __tablename__ = 'users'  # Explicitly set table name
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(20))
-    budget = db.Column(db.Float)
-    preferences = db.Column(db.Text)
+    password = db.Column(db.String(255), nullable=False)  # For storing hashed password
+    phone = db.Column(db.String(20), nullable=True)
+    budget = db.Column(db.Float, nullable=True)
+    preferences = db.Column(db.Text, nullable=True)
 
     leads = db.relationship("Lead", backref="user", lazy=True)
+
+    def __init__(self, name, email, password):
+        self.name = name
+        self.email = email
+        self.password = password
 
     def to_dict(self):
         return {
@@ -34,7 +42,7 @@ class Property(db.Model):
     bathrooms = db.Column(db.Integer, nullable=True)
     square_feet = db.Column(db.Integer, nullable=True)
     property_type = db.Column(db.String(50), nullable=True)
-    agent_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    agent_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
     # Relationship with images
     images = db.relationship("PropertyImage", backref="property", cascade="all, delete-orphan")
@@ -70,7 +78,7 @@ class PropertyImage(db.Model):
 class Lead(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(50), default="new")
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     assigned_agent_id = db.Column(db.Integer)
 
