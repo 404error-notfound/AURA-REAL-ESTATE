@@ -10,11 +10,13 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 @auth_bp.route("/register", methods=["POST"])
 def register():
     try:
-        print("Registration request received")
+        print("=== REGISTRATION REQUEST RECEIVED ===")
         data = request.get_json()
         print("Request data:", data)
+        print("Request headers:", dict(request.headers))
         
         if not data:
+            print("ERROR: No data provided")
             return error_response("Bad Request", "No data provided", 400)
         
         # Validate required fields

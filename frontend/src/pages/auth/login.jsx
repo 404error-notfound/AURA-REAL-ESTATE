@@ -5,9 +5,37 @@ export default function Login() {
     const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleSubmit = (e) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(form.email, form.password);
+    setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
+    
+    if (!form.email || !form.password) {
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      const result = await login(form.email, form.password);
+      if (result.success) {
+        setSuccessMessage(result.message || "Login successful!");
+        // The navigation will be handled by the auth context
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,10 +63,17 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="w-full bg-primary text-white p-2 rounded hover:bg-accent transition"
+          disabled={isLoading}
+          className="w-full bg-primary text-white p-2 rounded hover:bg-accent transition disabled:opacity-50"
         >
-          Login
+          {isLoading ? "Logging in..." : "Login"}
         </button>
+        {error && (
+          <p className="mt-4 text-red-500 text-sm text-center">{error}</p>
+        )}
+        {successMessage && (
+          <p className="mt-4 text-green-500 text-sm text-center">{successMessage}</p>
+        )}
       </form>
     </div>
   );

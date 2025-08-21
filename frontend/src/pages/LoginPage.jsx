@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/api";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,21 +17,15 @@ export default function LoginPage() {
     setMessage("");
     
     try {
-      const response = await loginUser(form);
-      if (response.success) {
-        setMessage("✅ Login successful!");
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        
-        // Small delay to show success message before redirect
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
+      const result = await login(form.email, form.password);
+      if (result.success) {
+        setMessage("✅ " + result.message);
       } else {
-        setMessage(`❌ ${response.message}`);
+        setMessage("❌ " + result.message);
       }
     } catch (error) {
       setMessage("❌ An error occurred during login");
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }

@@ -14,11 +14,12 @@ def create_app():
     app = Flask(__name__)
     
     # Configure CORS for development
-    CORS(app, supports_credentials=True, resources={
-        r"/*": {
-            "origins": "*",
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176"],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "Accept"],
+            "supports_credentials": True
         }
     })
     
@@ -46,12 +47,9 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     
-    # Drop and recreate all tables
+    # Create tables if they don't exist
     with app.app_context():
-        db.session.execute(text('DROP SCHEMA public CASCADE'))
-        db.session.execute(text('CREATE SCHEMA public'))
-        db.session.commit()
-        db.create_all()  # Create tables with the new schema
-        print("Database tables recreated successfully!")
+        db.create_all()
+        print("Database tables checked and created if needed!")
     
     app.run(debug=True, port=5000)

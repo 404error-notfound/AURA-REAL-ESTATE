@@ -58,6 +58,19 @@ export default function RegisterPage() {
 
       setIsLoading(true);
 
+      // Basic validation
+      if (!form.name || !form.email || !form.password) {
+        setMessage("❌ All fields are required");
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email)) {
+        setMessage("❌ Please enter a valid email address");
+        return;
+      }
+
       console.log('Submitting registration data:', {
         name: form.name,
         email: form.email,
@@ -67,7 +80,8 @@ export default function RegisterPage() {
       const response = await registerUser({
         name: form.name,
         email: form.email,
-        password: form.password
+        password: form.password,
+        user_type: "CLIENT" // Setting default user type
       });
       
       console.log('Registration response:', response);
@@ -75,6 +89,10 @@ export default function RegisterPage() {
       if (response.success) {
         setMessage("✅ Registered successfully! Please log in.");
         setForm({ name: "", email: "", password: "", confirmPassword: "" });
+        // Optionally redirect to login page after a delay
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
       } else {
         setMessage(`❌ ${response.message}`);
       }
