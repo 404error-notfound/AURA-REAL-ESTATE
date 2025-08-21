@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
-import api from "../../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-    const [profile, setProfile] = useState(null);
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const { data } = await api.get("/protected");
-        setProfile(data);
-      } catch (err) {
-        console.error("Error loading profile:", err);
-      }
-    };
-    fetchProfile();
-  }, []);
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+  }, [navigate]);
 
+  const handleLogout = async () => {
+    try {
+      // Clear local storage
+      localStorage.clear();
+      // Force reload and redirect
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     
@@ -33,26 +46,30 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="p-8 bg-extra-light min-h-screen">
-      <h1 className="text-3xl font-bold text-primary-dark mb-6">
-        Welcome {profile?.name || "User"} 👋
-      </h1>
-      {/* rest of dashboard cards */}
-      </div>
-      <div className="w-3/4 p-8 bg-extra-light min-h-screen">
-        <h1 className="text-3xl font-bold text-primary-dark mb-6">Welcome Back 👋</h1>
+      <div className="w-3/4 p-8 bg-gray-50 min-h-screen">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-[#001B48]">
+            Welcome {user?.name || "User"} 👋
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Logout
+          </button>
+        </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h3 className="text-primary font-bold text-lg">Properties</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-shadow">
+            <h3 className="text-[#001B48] font-bold text-lg">Properties</h3>
             <p className="text-gray-600">12 Active Listings</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h3 className="text-primary font-bold text-lg">Transactions</h3>
+          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-shadow">
+            <h3 className="text-[#001B48] font-bold text-lg">Transactions</h3>
             <p className="text-gray-600">5 Recent Payments</p>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h3 className="text-primary font-bold text-lg">Users</h3>
+          <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-shadow">
+            <h3 className="text-[#001B48] font-bold text-lg">Users</h3>
             <p className="text-gray-600">34 Registered Users</p>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import os
 from flask import Flask, request, jsonify
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from modelsdb import db, User
 from config import Config
 from dotenv import load_dotenv
@@ -74,6 +74,53 @@ def create_app():
                 "message": f"Registration error: {str(e)}"
             }), 500
 
+    @app.route("/api/auth/login", methods=["POST"])
+    def login():
+        try:
+            data = request.get_json()
+            
+            # Validate required fields
+            if not all(key in data for key in ["email", "password"]):
+                return jsonify({
+                    "success": False,
+                    "message": "Missing email or password"
+                }), 400
+            
+            # Find user by email
+            user = User.query.filter_by(email=data["email"]).first()
+            
+            # Check if user exists and password is correct
+            if user and check_password_hash(user.password, data["password"]):
+                # Create access token
+                access_token = create_access_token(identity=user.id)
+                
+                return jsonify({
+                    "success": True,
+                    "message": "Login successful",
+                    "data": {
+                        "token": access_token,
+                        "user": {
+                            "id": user.id,
+                            "name": user.name,
+                            "email": user.email
+                        }
+                    }
+                }), 200
+            else:
+                return jsonify({
+                    "success": False,
+                    "message": "Invalid email or password"
+                }), 401
+                
+        except Exception as e:
+            print(f"Error during login: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return jsonify({
+                "success": False,
+                "message": f"Login error: {str(e)}"
+            }), 500
+
     @app.route("/")
     def home():
         return jsonify({"message": "Welcome to AURA Real Estate API"})
@@ -83,10 +130,9 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     
-    # Drop and recreate database tables
+    # Create database tables if they don't exist
     with app.app_context():
-        db.drop_all()  # This will drop all existing tables
-        db.create_all()  # This will create tables with the new schema
-        print("Database tables recreated successfully!")
+        db.create_all()  # This will create tables only if they don't exist
+        print("Database tables checked/created successfully!")
     
     app.run(debug=True, port=5000)
