@@ -24,9 +24,9 @@ export function AuthProvider({ children }) {
     setToken(data.token);
     setUser({ email });
     navigate("/dashboard");
-  } catch (error) {
+    } catch (error) {
     alert(error.response?.data?.message || "Login failed");
-  }
+    }
     try {
       // Replace with your Flask backend API
       const response = await fetch("http://localhost:5000/api/login", {

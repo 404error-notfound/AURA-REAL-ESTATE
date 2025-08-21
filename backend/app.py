@@ -39,7 +39,7 @@ def create_app():
     app.register_blueprint(properties_bp)
     app.register_blueprint(leads_bp)
     app.register_blueprint(communications_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(auth_bp, url_prefix="/api")
 
     @app.route("/")
     def home():

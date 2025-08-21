@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from ..modelsdb import db, User
 from flask_jwt_extended import create_access_token
 from ..utils.responses import success_response, error_response
