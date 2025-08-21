@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify
-from ..modelsdb import db, User, UserType
+from flask import Blueprint, request, jsonify, current_app
+from modelsdb import db, User, UserType
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from ..utils.responses import success_response, error_response
+from utils.responses import success_response, error_response
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -9,25 +10,32 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 @auth_bp.route("/register", methods=["POST"])
 def register():
     try:
+        print("Registration request received")
         data = request.get_json()
+        print("Request data:", data)
+        
+        if not data:
+            return error_response("Bad Request", "No data provided", 400)
         
         # Validate required fields
         required_fields = ["name", "email", "password"]
         for field in required_fields:
-            if field not in data:
+            if not data.get(field):
+                print(f"Missing field: {field}")
                 return error_response("Bad Request", f"Missing required field: {field}", 400)
         
         # Check if email already exists
         if User.query.filter_by(email=data["email"]).first():
+            print(f"Email already exists: {data['email']}")
             return error_response("Conflict", "Email already exists", 409)
 
-        # Create new user
+        # Create new user with password
         user = User(
             name=data["name"],
             email=data["email"],
+            password=data["password"],  # Password will be hashed in __init__
             user_type=UserType[data.get("user_type", "CLIENT").upper()]
         )
-        user.set_password(data["password"])
         
         # Add optional fields if provided
         optional_fields = ["phone", "profile_image", "budget_min", "budget_max", 

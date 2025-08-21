@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from ..modelsdb import db, Communication, Lead
-from ..utils.responses import success_response, error_response
+from modelsdb import db, Communication, Lead, User
+from utils.responses import success_response, error_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_mail import Message
 
@@ -8,27 +8,8 @@ communications_bp = Blueprint("communications", __name__, url_prefix="/api/commu
 
 # Helper function to send email
 def send_new_message_email(comm):
-    from ..app import mail
-    lead = Lead.query.get(comm.lead_id)
-    if not lead:
-        return
-
-    # Determine recipient: agent if client sent message, client if agent sent message
-    if comm.agent_id:
-        recipient_email = User.query.get(lead.user_id).email
-    else:
-        # If client sent, send to assigned agent if any
-        agent = User.query.get(lead.agent_id)
-        recipient_email = agent.email if agent else None
-
-    if recipient_email:
-        msg = Message(
-            subject=f"New Message for Lead {lead.name}",
-            sender="youremail@gmail.com",
-            recipients=[recipient_email],
-            body=f"Message: {comm.message}"
-        )
-        mail.send(msg)
+    # TODO: Implement email functionality
+    pass
 
 # Create a message
 @communications_bp.route("/", methods=["POST"])

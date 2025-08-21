@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from ..modelsdb import db, Property
-from ..utils.responses import success_response, error_response
+from modelsdb import db, Property
+from utils.responses import success_response, error_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 properties_bp = Blueprint("properties", __name__, url_prefix="/api/properties")

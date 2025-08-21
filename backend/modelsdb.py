@@ -31,21 +31,19 @@ class LeadStatus(PyEnum):
     CONVERTED = 'converted'
     LOST = 'lost'
 
-# User Model
+    # User Model
 class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)  # Changed from password_hash
     user_type = db.Column(db.Enum(UserType), default=UserType.CLIENT)
     phone = db.Column(db.String(20))
     profile_image = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Client-specific fields
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)    # Client-specific fields
     budget_min = db.Column(db.Float)
     budget_max = db.Column(db.Float)
     preferred_locations = db.Column(db.String(500))
@@ -67,18 +65,20 @@ class User(db.Model):
     messages_received = db.relationship('Communication', backref='recipient', lazy=True,
                                       foreign_keys='Communication.recipient_id')
 
-    def __init__(self, name, email, user_type=UserType.CLIENT):
+    def __init__(self, name, email, password=None, user_type=UserType.CLIENT):
         self.name = name
         self.email = email
+        if password:
+            self.set_password(password)
         self.user_type = user_type
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
 
     def check_password(self, password):
         from werkzeug.security import check_password_hash
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
 
     def to_dict(self):
         data = {

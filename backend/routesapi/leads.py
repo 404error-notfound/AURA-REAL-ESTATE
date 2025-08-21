@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from ..modelsdb import db, Lead
-from ..utils.responses import success_response, error_response
+from modelsdb import db, Lead, User
+from utils.responses import success_response, error_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_mail import Message
 
@@ -8,18 +8,8 @@ leads_bp = Blueprint("leads", __name__, url_prefix="/api/leads")
 
 # Helper function to send email
 def send_new_lead_email(lead):
-    from ..app import mail
-    # Notify assigned agent if exists
-    if lead.agent_id:
-        agent = User.query.get(lead.agent_id)
-        if agent:
-            msg = Message(
-                subject=f"New Lead Assigned: {lead.name}",
-                sender="youremail@gmail.com",
-                recipients=[agent.email],
-                body=f"A new lead has been created.\nName: {lead.name}\nBudget: {lead.budget}\nPreferences: {lead.preferences}"
-            )
-            mail.send(msg)
+    # TODO: Implement email functionality
+    pass
 
 
 # Create a lead (client can create only for themselves, agent/admin full)

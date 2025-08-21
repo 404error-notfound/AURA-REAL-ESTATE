@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from ..modelsdb import db, User
-from ..utils.responses import success_response, error_response
+from modelsdb import db, User
+from utils.responses import success_response, error_response
 
 users_bp = Blueprint("users", __name__, url_prefix="/api/users")
 
