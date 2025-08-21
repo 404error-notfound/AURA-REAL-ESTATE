@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from ..modelsdb import db, User
 from flask_jwt_extended import create_access_token
-from utils.responses import success_response, error_response
+from ..utils.responses import success_response, error_response
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
