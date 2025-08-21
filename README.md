@@ -1,31 +1,75 @@
 # AURA-REAL-ESTATE
 
-Aura Homes is a modern real estate platform that provides clients with a personalized and intuitive way to find their ideal property, while empowering agents with powerful tools for managing leads, properties, and client interactions.
+Aura Homes is a modern, mobile-first real estate platform that connects clients with agents and properties. Our platform provides an intuitive way for clients to find their ideal property while empowering agents with powerful tools for managing leads, properties, and client interactions.
 
 ## Features
 
-- **User Authentication**
-  - User registration with email and password
-  - Secure login with JWT token authentication
-  - Protected routes for authenticated users
-  - Secure logout functionality
+### User Authentication & Profiles
+- Secure registration and login with JWT authentication
+- Client profile management
+  - Personal information
+  - Contact details
+  - Budget preferences
+  - Property type preferences
+  - Favorite properties list
+- Agent profile management
+  - Professional information
+  - Service areas
+  - Client portfolio
+  - Performance metrics
 
-- **Property Management** (Coming Soon)
-  - Property listings with detailed information
-  - Property search and filtering
-  - Image gallery for properties
-  - Property status tracking
+### Property Management
+- Comprehensive property CRUD operations for agents
+- Detailed property information:
+  - Basic details (price, address, type)
+  - Specifications (bathrooms, square footage)
+  - Features and amenities
+  - Location details
+- Multiple property types support:
+  - Residential (townhouses, condominiums, apartments)
+  - Commercial (retail stores, shopping centres, restaurants)
+  - Healthcare (hospitals, clinics)
+  - Industrial (warehouses, factories)
+  - Land (farmland, raw land)
+- Advanced media features:
+  - Multi-image upload and management
+  - Image gallery with carousel
+  - Virtual tours (coming soon)
+- Property comparison tool
+- Popularity tracking (views, favorites, inquiries)
 
-- **Lead Management** (Coming Soon)
-  - Lead capture and tracking
-  - Lead status management
-  - Communication history
+### Lead Management
+- Mobile-optimized lead capture forms
+- Form validation (frontend and backend)
+- Lead status tracking system
+- Manual agent assignment
+- Lead analytics and reporting
+- Client interaction logging
+- Automated email notifications
 
-- **Client Interaction** (Coming Soon)
-  - Client profiles
-  - Message system
-  - Property favorites
-  - Viewing appointments
+### Client-Agent Communication
+- In-app messaging system
+- Email notifications for:
+  - New leads
+  - Property updates
+  - Status changes
+  - Messages
+- Property inquiry forms
+- Viewing appointment scheduling
+
+### Mobile-First Design
+- Responsive layout
+- Touch-friendly interfaces
+- Fast loading times
+- Offline capabilities (coming soon)
+
+### Enhanced Property Features
+- Advanced search filters
+- Property recommendations
+- Popular properties showcase
+- Recently viewed properties
+- Similar property suggestions
+- Save search preferences
 
 ## Tech Stack
 
