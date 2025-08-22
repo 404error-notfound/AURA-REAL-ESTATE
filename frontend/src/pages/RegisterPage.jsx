@@ -105,94 +105,151 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#D6E8EE] py-8">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm mx-auto">
-        <h2 className="text-2xl font-bold text-[#001B48] mb-6 text-center">Register</h2>
-        
-        <div className="flex flex-col items-center">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="w-64 p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#018ABE]"
-          />
+    <div className="min-h-screen flex items-center justify-center bg-[#D6E8EE] px-4 py-8">
+      <div className="w-full max-w-md">
+        <form onSubmit={handleSubmit} className="bg-white p-6 lg:p-8 rounded-2xl shadow-lg">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-[#001B48]">Create Account</h2>
+            <p className="text-gray-600 mt-2">Join AURA Real Estate today</p>
+          </div>
           
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="w-64 p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#018ABE]"
-          />
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-transparent transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-transparent transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                value={form.password}
+                onChange={handleChange}
+                onFocus={() => setShowPasswordGuidelines(true)}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-transparent transition-colors"
+              />
+              
+              {showPasswordGuidelines && (
+                <div className="mt-3 p-3 bg-gray-50 rounded-lg border text-sm">
+                  <h3 className="font-semibold mb-2 text-gray-700">Password Requirements:</h3>
+                  <ul className="space-y-1">
+                    <li className={`flex items-center ${passwordStrength.hasLength ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className="mr-2">{passwordStrength.hasLength ? '✓' : '○'}</span>
+                      At least 8 characters
+                    </li>
+                    <li className={`flex items-center ${passwordStrength.hasUppercase ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className="mr-2">{passwordStrength.hasUppercase ? '✓' : '○'}</span>
+                      One uppercase letter
+                    </li>
+                    <li className={`flex items-center ${passwordStrength.hasLowercase ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className="mr-2">{passwordStrength.hasLowercase ? '✓' : '○'}</span>
+                      One lowercase letter
+                    </li>
+                    <li className={`flex items-center ${passwordStrength.hasNumber ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className="mr-2">{passwordStrength.hasNumber ? '✓' : '○'}</span>
+                      One number
+                    </li>
+                    <li className={`flex items-center ${passwordStrength.hasSpecial ? 'text-green-600' : 'text-gray-500'}`}>
+                      <span className="mr-2">{passwordStrength.hasSpecial ? '✓' : '○'}</span>
+                      One special character (!@#$%^&*)
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-transparent transition-colors"
+              />
+            </div>
+          </div>
           
-          <div className="relative mb-3">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              onFocus={() => setShowPasswordGuidelines(true)}
-              required
-              className="w-64 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#018ABE]"
-            />
+          <button 
+            type="submit"
+            disabled={isLoading}
+            className={`w-full mt-6 py-3 px-4 rounded-lg font-medium transition-colors ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-[#018ABE] hover:bg-[#0179A8] active:bg-[#016B91]'
+            } text-white`}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                <span>Creating account...</span>
+              </div>
+            ) : (
+              'Create Account'
+            )}
+          </button>
           
-          {showPasswordGuidelines && (
-            <div className="mt-2 p-3 bg-gray-50 rounded-lg border text-sm w-64">
-              <h3 className="font-semibold mb-2">Password Requirements:</h3>
-              <ul className="space-y-1">
-                <li className={`flex items-center ${passwordStrength.hasLength ? 'text-green-600' : 'text-gray-600'}`}>
-                  {passwordStrength.hasLength ? '✓' : '○'} At least 8 characters
-                </li>
-                <li className={`flex items-center ${passwordStrength.hasUppercase ? 'text-green-600' : 'text-gray-600'}`}>
-                  {passwordStrength.hasUppercase ? '✓' : '○'} One uppercase letter
-                </li>
-                <li className={`flex items-center ${passwordStrength.hasLowercase ? 'text-green-600' : 'text-gray-600'}`}>
-                  {passwordStrength.hasLowercase ? '✓' : '○'} One lowercase letter
-                </li>
-                <li className={`flex items-center ${passwordStrength.hasNumber ? 'text-green-600' : 'text-gray-600'}`}>
-                  {passwordStrength.hasNumber ? '✓' : '○'} One number
-                </li>
-                <li className={`flex items-center ${passwordStrength.hasSpecial ? 'text-green-600' : 'text-gray-600'}`}>
-                  {passwordStrength.hasSpecial ? '✓' : '○'} One special character (!@#$%^&*)
-                </li>
-              </ul>
+          {message && (
+            <div className={`mt-4 p-3 rounded-lg text-sm text-center ${
+              message.includes('✅') 
+                ? 'bg-green-50 text-green-700 border border-green-200' 
+                : 'bg-red-50 text-red-700 border border-red-200'
+            }`}>
+              {message}
             </div>
           )}
-        </div>
 
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
-          className="w-64 p-2 mb-6 border rounded focus:outline-none focus:ring-2 focus:ring-[#018ABE]"
-        />
-        
-        <button 
-          type="submit"
-          disabled={isLoading}
-          className={`bg-[#018ABE] text-white px-4 py-2 rounded w-64 transition-colors ${
-            isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#0179A8]'
-          }`}
-        >
-          {isLoading ? 'Registering...' : 'Register'}
-        </button>
-        
-        {message && (
-          <p className={`mt-3 text-sm text-center ${message.includes('✅') ? 'text-green-600' : 'text-red-600'}`}>
-            {message}
-          </p>
-        )}
-        </div>
-      </form>
+          <div className="mt-6 text-center">
+            <p className="text-gray-600">
+              Already have an account?{' '}
+              <a href="/login" className="text-[#018ABE] hover:text-[#0179A8] font-medium">
+                Sign in here
+              </a>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
