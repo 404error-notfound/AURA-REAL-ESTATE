@@ -148,11 +148,47 @@ def validate_property_data(data):
             except (ValueError, TypeError):
                 errors.append(f"{field.replace('_', ' ').title()} must be a valid number")
     
-    return errors
+    # Coordinate validation
+    if data.get('latitude') is not None:
+        try:
+            lat = float(data['latitude'])
+            if lat < -90 or lat > 90:
+                errors.append("Latitude must be between -90 and 90")
+        except (ValueError, TypeError):
+            errors.append("Latitude must be a valid number")
+    
+    if data.get('longitude') is not None:
+        try:
+            lng = float(data['longitude'])
+            if lng < -180 or lng > 180:
+                errors.append("Longitude must be between -180 and 180")
+        except (ValueError, TypeError):
+            errors.append("Longitude must be a valid number")
+    
+    # Property type validation
+    valid_property_types = [
+        'townhouse', 'condominium', 'apartment', 'retail', 'shopping_centre',
+        'restaurant', 'hospital', 'warehouse', 'factory', 'farmland', 'raw_land'
+    ]
+    if data.get('property_type') and data['property_type'] not in valid_property_types:
+        errors.append("Invalid property type")
+    
+    # Status validation
+    valid_statuses = ['active', 'pending', 'sold', 'withdrawn']
+    if data.get('status') and data['status'] not in valid_statuses:
+        errors.append("Invalid status")
+    
+    return len(errors) == 0, errors
 
 def validate_lead_data(data):
     """Validate lead creation/update data"""
     errors = []
+    
+    # user_id is only required if not provided automatically (for agents)
+    # For clients, it will be set automatically
+    if not data.get('user_id'):
+        # This will be handled in the API route for clients
+        pass
     
     # Budget validation
     if data.get('budget_min') and data.get('budget_max'):
@@ -175,7 +211,47 @@ def validate_lead_data(data):
     if data.get('preferred_contact_time') and data['preferred_contact_time'] not in valid_contact_times:
         errors.append("Invalid contact time preference")
     
-    return errors
+    # Status validation
+    valid_statuses = ['new', 'contacted', 'in_progress', 'qualified', 'unqualified', 'converted', 'lost']
+    if data.get('status') and data['status'] not in valid_statuses:
+        errors.append("Invalid lead status")
+    
+    # Property type validation
+    valid_property_types = [
+        'townhouse', 'condominium', 'apartment', 'retail', 'shopping_centre',
+        'restaurant', 'hospital', 'warehouse', 'factory', 'farmland', 'raw_land'
+    ]
+    if data.get('desired_property_type') and data['desired_property_type'] not in valid_property_types:
+        errors.append("Invalid desired property type")
+    
+    # Numeric fields validation
+    if data.get('desired_bedrooms') is not None:
+        try:
+            bedrooms = int(data['desired_bedrooms'])
+            if bedrooms < 0:
+                errors.append("Desired bedrooms cannot be negative")
+        except (ValueError, TypeError):
+            errors.append("Desired bedrooms must be a valid number")
+    
+    if data.get('desired_bathrooms') is not None:
+        try:
+            bathrooms = float(data['desired_bathrooms'])
+            if bathrooms < 0:
+                errors.append("Desired bathrooms cannot be negative")
+        except (ValueError, TypeError):
+            errors.append("Desired bathrooms must be a valid number")
+    
+    # String length validations
+    if data.get('source') and len(data['source']) > 100:
+        errors.append("Source must be less than 100 characters")
+    
+    if data.get('desired_location') and len(data['desired_location']) > 500:
+        errors.append("Desired location must be less than 500 characters")
+    
+    if data.get('desired_property_type') and len(data['desired_property_type']) > 500:
+        errors.append("Desired property type must be less than 500 characters")
+    
+    return len(errors) == 0, errors
 
 def validation_error_response(errors):
     """Create a standardized validation error response"""

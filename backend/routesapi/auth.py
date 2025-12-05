@@ -108,45 +108,65 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     try:
+        print("=== LOGIN REQUEST RECEIVED ===")
         data = request.get_json()
+        print("Login data:", data)
+        print("Request headers:", dict(request.headers))
         
         if not data:
+            print("ERROR: No data provided")
             return error_response("Bad Request", "No data provided", 400)
         
         # Validate required fields
         if not all(key in data for key in ["email", "password"]):
+            print("ERROR: Missing email or password")
             return error_response("Bad Request", "Missing email or password", 400)
         
         # Validate email format
         try:
             validate_email(data["email"])
         except ValidationError as e:
+            print(f"ERROR: Email validation failed: {e.message}")
             return error_response("Bad Request", e.message, 400)
         
         # Check password is not empty
         if not data["password"]:
+            print("ERROR: Password is empty")
             return error_response("Bad Request", "Password is required", 400)
         
         # Find user and check password
         email = data["email"].strip().lower()
+        print(f"Looking for user with email: {email}")
         user = User.query.filter_by(email=email).first()
-        if not user or not user.check_password(data["password"]):
+        print(f"User found: {user.email if user else 'None'}")
+        
+        if not user:
+            print("ERROR: User not found")
+            return error_response("Unauthorized", "Invalid email or password", 401)
+            
+        print("Checking password...")
+        if not user.check_password(data["password"]):
+            print("ERROR: Password check failed")
             return error_response("Unauthorized", "Invalid email or password", 401)
 
+        print("Password check successful, creating token...")
         # Create access token with user type
         token = create_access_token(identity={
             "id": user.id,
             "user_type": user.user_type.value
         })
         
+        print("Login successful!")
         return success_response({
             "token": token,
             "user": user.to_dict()
         }, "Login successful")
         
     except ValidationError as e:
+        print(f"Validation error: {e.message}")
         return error_response("Validation Error", e.message, 400)
     except Exception as e:
+        print(f"Server error: {str(e)}")
         return error_response("Server Error", str(e), 500)
 
 # Get current user

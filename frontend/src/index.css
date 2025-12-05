@@ -3,14 +3,73 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: #213547;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure all paragraph text is black and centered in forms */
+p {
+  color: #000000 !important;
+}
+
+/* Center align paragraphs specifically in forms */
+form p, 
+.form-container p,
+.property-form p,
+.lead-form p,
+.auth-form p {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 400px !important;
+}
+
+/* Style all input fields to be smaller and centered */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="number"], 
+input[type="tel"], 
+input[type="url"], 
+input[type="search"],
+input[type="file"],
+textarea,
+select {
+  max-width: 400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+/* Ensure form containers center their content */
+form {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+/* Center form field containers */
+.form-field,
+.input-field,
+.mb-4 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+/* Center labels */
+label {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 a {
@@ -51,6 +110,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: #ffffff !important;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -71,6 +131,23 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #1a1a1a;
+    color: #ffffff !important;
+  }
+  /* Ensure paragraphs remain black and centered in light mode */
+  p {
+    color: #000000 !important;
+  }
+  
+  /* Maintain form centering in light mode */
+  form p, 
+  .form-container p,
+  .property-form p,
+  .lead-form p,
+  .auth-form p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 400px !important;
   }
 }

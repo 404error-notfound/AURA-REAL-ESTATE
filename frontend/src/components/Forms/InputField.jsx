@@ -41,17 +41,17 @@ const InputField = ({
   const isValid = !displayError && value && validationResult?.isValid;
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex flex-col items-center">
       {label && (
         <label
           htmlFor={name}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-gray-700 mb-1 text-center"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      <div className="relative">
+      <div className="relative w-full max-w-md">
         <input
           type={type}
           name={name}
@@ -63,7 +63,7 @@ const InputField = ({
           placeholder={placeholder}
           disabled={disabled}
           className={`
-            w-full px-3 py-2 border rounded-md shadow-sm transition-colors
+            max-w-md mx-auto px-3 py-2 border rounded-md shadow-sm transition-colors text-center
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
             ${displayError 
               ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
@@ -89,7 +89,7 @@ const InputField = ({
       
       {/* Error message */}
       {displayError && (
-        <p className="mt-1 text-sm text-red-600 flex items-center">
+        <p className="mt-1 text-sm text-red-600 flex items-center justify-center text-center">
           <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
@@ -99,26 +99,26 @@ const InputField = ({
       
       {/* Password requirements */}
       {showPasswordRequirements && type === 'password' && validationResult?.requirements && (focused || value) && (
-        <div className="mt-2 p-3 bg-gray-50 rounded-md">
-          <p className="text-xs text-gray-600 mb-2">Password must contain:</p>
+        <div className="mt-2 p-3 bg-gray-50 rounded-md max-w-md mx-auto">
+          <p className="text-xs text-black mb-2 font-medium text-center">Password must contain:</p>
           <div className="grid grid-cols-2 gap-1 text-xs">
-            <div className={`flex items-center ${validationResult.requirements.hasLength ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`flex items-center justify-center ${validationResult.requirements.hasLength ? 'text-green-600' : 'text-black'}`}>
               <span className="mr-1">{validationResult.requirements.hasLength ? '✓' : '○'}</span>
               8+ characters
             </div>
-            <div className={`flex items-center ${validationResult.requirements.hasUppercase ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`flex items-center justify-center ${validationResult.requirements.hasUppercase ? 'text-green-600' : 'text-black'}`}>
               <span className="mr-1">{validationResult.requirements.hasUppercase ? '✓' : '○'}</span>
               Uppercase letter
             </div>
-            <div className={`flex items-center ${validationResult.requirements.hasLowercase ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`flex items-center justify-center ${validationResult.requirements.hasLowercase ? 'text-green-600' : 'text-black'}`}>
               <span className="mr-1">{validationResult.requirements.hasLowercase ? '✓' : '○'}</span>
               Lowercase letter
             </div>
-            <div className={`flex items-center ${validationResult.requirements.hasNumber ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`flex items-center justify-center ${validationResult.requirements.hasNumber ? 'text-green-600' : 'text-black'}`}>
               <span className="mr-1">{validationResult.requirements.hasNumber ? '✓' : '○'}</span>
               Number
             </div>
-            <div className={`flex items-center ${validationResult.requirements.hasSpecial ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`flex items-center justify-center ${validationResult.requirements.hasSpecial ? 'text-green-600' : 'text-black'}`}>
               <span className="mr-1">{validationResult.requirements.hasSpecial ? '✓' : '○'}</span>
               Special character
             </div>

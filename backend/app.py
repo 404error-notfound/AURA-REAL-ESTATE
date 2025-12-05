@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from modelsdb import db
@@ -41,6 +41,12 @@ def create_app():
     @app.route("/")
     def home():
         return jsonify({"message": "Welcome to AURA Real Estate API"})
+
+    # Serve uploaded files
+    @app.route("/uploads/<filename>")
+    def uploaded_file(filename):
+        upload_dir = os.path.join(os.getcwd(), 'uploads')
+        return send_from_directory(upload_dir, filename)
 
     return app
 

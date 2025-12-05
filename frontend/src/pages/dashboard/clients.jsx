@@ -8,9 +8,39 @@ export default function Clients() {
     <div className="p-4 lg:p-8">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 lg:mb-8 gap-4">
         <h1 className="text-2xl lg:text-3xl font-bold text-[#001B48]">Clients</h1>
-        <button className="w-full lg:w-auto px-4 py-2 bg-[#018ABE] text-white rounded-lg hover:bg-[#0179A8] transition-colors">
+        <button className="w-full lg:w-auto px-6 py-3 bg-[#018ABE] text-white rounded-lg hover:bg-[#0179A8] transition-colors font-medium">
           Add New Client
         </button>
+      </div>
+
+      {/* Search and Filter Section */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm mb-6 lg:mb-8">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-4 max-w-4xl mx-auto">
+          <div className="w-full lg:flex-1">
+            <input
+              type="text"
+              placeholder="Search clients by name or email..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-[#018ABE] text-center lg:text-left transition-colors"
+            />
+          </div>
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-4 items-center">
+            <select className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-[#018ABE] text-center transition-colors">
+              <option value="">Client Status</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            <select className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018ABE] focus:border-[#018ABE] text-center transition-colors">
+              <option value="">Sort By</option>
+              <option value="name">Name</option>
+              <option value="recent">Recently Added</option>
+              <option value="status">Status</option>
+            </select>
+            <button className="w-full sm:w-auto px-6 py-3 bg-[#001B48] text-white rounded-lg hover:bg-[#002B6D] transition-colors font-medium">
+              Filter
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Mobile Card View */}

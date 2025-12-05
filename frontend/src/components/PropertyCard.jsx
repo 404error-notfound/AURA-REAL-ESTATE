@@ -1,21 +1,36 @@
 import React from 'react';
 
 export default function PropertyCard({ property }) {
+  // Helper function to get the primary image URL
+  const getPrimaryImageUrl = () => {
+    if (property?.images && property.images.length > 0) {
+      const primaryImage = property.images.find(img => img.is_primary) || property.images[0];
+      // Construct full URL for image
+      return `http://localhost:5000${primaryImage.image_url}`;
+    }
+    return null;
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
       {/* Property Image */}
       <div className="relative aspect-video bg-gray-200">
-        {property?.images?.[0] ? (
+        {getPrimaryImageUrl() ? (
           <img 
-            src={property.images[0]} 
+            src={getPrimaryImageUrl()} 
             alt={property.title}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-gray-500">No Image Available</span>
-          </div>
-        )}
+        ) : null}
+        <div 
+          className={`w-full h-full flex items-center justify-center ${getPrimaryImageUrl() ? 'hidden' : 'flex'}`}
+        >
+          <span className="text-gray-500">No Image Available</span>
+        </div>
         <div className="absolute top-3 right-3">
           <span className="px-3 py-1 bg-[#018ABE] text-white rounded-full text-sm font-medium">
             {property?.status || 'Available'}
